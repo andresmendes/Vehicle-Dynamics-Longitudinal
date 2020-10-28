@@ -1,3 +1,5 @@
+[![View Vehicle Dynamics - Longitudinal on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/81938-vehicle-dynamics-longitudinal)
+
 # Vehicle Dynamics - Longitudinal: Open Source Simulation Package for MATLAB
 
 (Under construction)
