@@ -17,7 +17,7 @@ classdef Simulator<handle
         end
 
         function Simulate(self)
-            options = odeset('AbsTol',1e-6,'RelTol',1e-6)
+            options = odeset('AbsTol',1e-6,'RelTol',1e-6);
             [TOUT, XOUT] = ode45(@(t, estados) self.Vehicle.Model(t, estados,self.TSpan), self.TSpan, self.getInitialState(),options);
             % retrieve states exclusive to the vehicle
             self.X = XOUT(:, 1);
