@@ -2,8 +2,6 @@
 
 # Vehicle Dynamics - Longitudinal: Open Source Simulation Package for MATLAB
 
-(Under construction)
-
 Vehicle Dynamics - Longitudinal is part of the [OpenVD Project](https://github.com/andresmendes/openvd).
 
 ## Documentation
