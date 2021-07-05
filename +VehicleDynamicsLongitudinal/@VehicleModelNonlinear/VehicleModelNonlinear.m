@@ -41,8 +41,8 @@ Rx=0;
             % Gravity force
             Gx = 0;
             if t > 20
-                theta = 2*pi/180;   % Slope                     [rad]
-                Gx = m*g*sin(theta);     % Gravity force             [N]
+                theta = 2*pi/180;           % Slope             [rad]
+                Gx = m*g*sin(theta);        % Gravity force     [N]
             end
             
             % Traction force
@@ -56,7 +56,7 @@ Rx=0;
 %             end
             Kp      = 300;
             Ki      = 100;
-            vOp   = 72/3.6; % Ref. speed [m/s]
+            vOp     = 72/3.6; % Ref. speed [m/s]
             Clinear = 2*C*vOp;
             Ft = Kp*(vOp-V)+Ki*(vOp*t - X) + C*vOp^2 + (V - vOp)*Clinear;
 
@@ -70,5 +70,5 @@ end
 
 %% See Also
 %
-% <../../index.html Home>
+% <https://github.com/andresmendes/Vehicle-Dynamics-Longitudinal Home>
 %

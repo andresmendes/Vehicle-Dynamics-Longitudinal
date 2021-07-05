@@ -5,7 +5,7 @@
 %% Simulation models and parameters
 % First, all classes of the package are imported with
 
-clear ; close all ; clc
+clear ; close all ; clc 
 
 import VehicleDynamicsLongitudinal.*
 
