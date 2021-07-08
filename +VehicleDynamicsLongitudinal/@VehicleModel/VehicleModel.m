@@ -10,22 +10,24 @@ classdef (Abstract) VehicleModel
     end
 
     properties
-        m       % Mass of the vehicle   [kg]
-        Ft      % Traction force        [N]
-        Fb      % Brake force           [N]
-        Rx      % Rolling resistance    [N]
-        Dx      % Drag force            [N]
-        Gx      % Gravity force         [N]
+        % Vehicle parameters
+        m       % Mass of the vehicle       [kg]
+        Cd      % Drag coefficient          [-]
+        A       % Frontal area              [m2]
+        L       % Length of the vehicle     [m]
+        W       % Width of the vehicle      [m]
+        % Constants
+        g       % Gravity                   [m/s2]
+        rho     % Air density               [kg/m2]
+        % Function handle
+        slope   % Road slope function 
+        v_ref   % Speed reference function
+        control % Speed reference function
+        
     end
 
     methods
-
-
+       
     end
 
 end
-
-%% See Also
-%
-% <https://github.com/andresmendes/Vehicle-Dynamics-Longitudinal Home>
-%

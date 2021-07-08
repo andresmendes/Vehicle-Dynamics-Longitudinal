@@ -6,29 +6,40 @@ classdef VehicleModelNonlinear < VehicleDynamicsLongitudinal.VehicleModel
     methods
         % Constructor
         function self = VehicleModelNonlinear()
+            
+            % Vehicle parameters
             self.m  = 1000;         % Mass of the vehicle       [kg]
-            self.Ft = 133.7000;     % Traction force            [N]
-            self.Fb = 0;            % Brake force               [N]
+            self.Cd = 0.35;         % Drag coefficient          [-]
+            self.A  = 2.5;          % Frontal area              [m2]
+            self.L  = 4.65;         % Length of the vehicle     [m]
+            self.W  = 1.78;         % Width of the vehicle      [m]
+            % Constants
+            self.g   = 9.81;        % Gravity                   [m/s2]
+            self.rho = 1;           % Air density               [kg/m2]
+            % Function handles
+            self.slope      = @self.road_slope;                 % Road slope function
+            self.v_ref      = @self.speed_reference;            % Speed reference function
+            self.control    = @self.longitudinal_controller;    % Longitudinal controller
+
         end
 
-        function dx = Model(self, t, states,~)
-            
+        function [dz,Ft,V_ref] = Model(self, t, states,~)
+
             % Parameters
+            g   = self.g;  
             m   = self.m;
-            g   = 9.81;             % Gravity                   [m/s2]
-            Cd  = 0.3;              % Drag coefficient          [-]
-            A   = 2;                % Frontal area              [m2]
-            rho = 1;                % Air density               [kg/m2]
-            
+            Cd  = self.Cd;          
+            A   = self.A;    
+            rho = self.rho;
+                        
             % States
-            X = states(1);
+%             X = states(1);
             V = states(2);
 
             % Drag resistance
-            C  = 0.5*rho*Cd*A;
             Dx = 0.5*rho*Cd*A*V^2;
             
-            % Rolling resistance
+            % TODO: Rolling resistance 
 %             vKPH = V*3.6;
 %             W = m*g;                % Weight [N]
 %             vMPH = vKPH/1.609;      % Velocidade [mph]
@@ -37,38 +48,46 @@ classdef VehicleModelNonlinear < VehicleDynamicsLongitudinal.VehicleModel
 %             fs = 0.007;
 %             fr = f0 + 3.24*fs*(vMPH/100).^2.5;
 %             Rx = fr*W;              % [N]
-Rx=0;
-            % Gravity force
-            Gx = 0;
-            if t > 20
-                theta = 2*pi/180;           % Slope             [rad]
-                Gx = m*g*sin(theta);        % Gravity force     [N]
-            end
+            Rx=0;
             
-            % Traction force
-            % TODO: PI control as Ft model using function handle.
-%             if isa(self.Ft,'function_handle')
-%                 Ft = self.Ft([X;V],t);
-%             elseif length(self.Ft)>1
-%                 Ft = interp1(tspan,self.Ft,t);
-%             else
-%                 Ft = self.Ft;
-%             end
-            Kp      = 300;
-            Ki      = 100;
-            vOp     = 72/3.6; % Ref. speed [m/s]
-            Clinear = 2*C*vOp;
-            Ft = Kp*(vOp-V)+Ki*(vOp*t - X) + C*vOp^2 + (V - vOp)*Clinear;
+            % Gravity force
+            theta = self.slope(t);              % Slope                 [rad]
+            Gx = m*g*sin(theta);                % Gravity force         [N]
+            
+            % Longitudinal force
+            V_ref = self.v_ref(t);              % Speed reference       [m/s]
+            Ft = self.control(V,V_ref);         % Longitudinal force    [N]
 
             % Dynamics
-            dx(1,1) = V;
-            dx(2,1) = (Ft - Dx - Rx - Gx)/m;
+            dz(1,1) = V;
+            dz(2,1) = (Ft - Dx - Rx - Gx)/m;
 
+        end
+
+        function theta = road_slope(~,~)
+            % road_slope define the standard slope as a function of time.
+            theta = 0;                  % Slope             [rad]
+        end
+
+        function v_ref = speed_reference(~,~)
+            % road_slope define the standard speed reference as a function
+            % of time.
+            v_ref = 20;                 % speed             [m/s]
+        end
+
+        function Ft = longitudinal_controller(self,V,V_ref)
+            % longitudinal_controller define the standard traction force as
+            % a function of speed reference.
+            
+            Cd  = self.Cd;          
+            A   = self.A;    
+            rho = self.rho;
+
+            Dx = 0.5*rho*Cd*A*V_ref^2;
+            
+            Kp  = 500;
+            Ft  = Kp*(V_ref - V) + Dx;
+            
         end
     end
 end
-
-%% See Also
-%
-% <https://github.com/andresmendes/Vehicle-Dynamics-Longitudinal Home>
-%
